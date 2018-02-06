@@ -8,6 +8,46 @@
 
 #import <Foundation/Foundation.h>
 
+NSMutableArray *quickSortArr;
+
+#pragma mark - 快速排序核心逻辑
+void quickSort(NSInteger left, NSInteger right)
+{
+    //递归左>递归右位数，说明无效
+    if (left > right) {
+        return;
+    }
+    //取出基准数
+    NSInteger temp = [quickSortArr[left] integerValue];
+    NSInteger i = left;
+    NSInteger j = right;
+    //相等时进行基准数归位（每一次目的就是基准数到达正确位置）
+    while (i != j) {
+        //先从右往左找,找到比基准数小的
+        while ([quickSortArr[j] integerValue] >= temp && i < j) {
+            j--;
+        }
+        //再从左往右找，找到比基准数大的
+        while ([quickSortArr[i] integerValue] <= temp && i < j) {
+            i++;
+        }
+        
+        //进行交换
+        if (i < j) {
+            NSInteger quickSort_t = [quickSortArr[i] integerValue];
+            quickSortArr[i] = [NSString stringWithFormat:@"%li", [quickSortArr[j] integerValue]];
+            quickSortArr[j] = [NSString stringWithFormat:@"%li", quickSort_t];
+        }
+    }
+    quickSortArr[left] = [NSString stringWithFormat:@"%li", [quickSortArr[i] integerValue]];
+    quickSortArr[i] = [NSString stringWithFormat:@"%li", temp];
+    
+    quickSort(left, i - 1);
+    quickSort(i + 1, right);
+    return;
+}
+
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
 #pragma mark - 1-1桶排序
@@ -60,6 +100,26 @@ int main(int argc, const char * argv[]) {
 //        NSLog(@"排序后如下\n");
         for (int i = 0; i < arr_1_2.count; i++) {
 //            printf("%li  ", [arr_1_2[i] integerValue]);
+        }
+        
+        
+#pragma mark - 1-3快速排序
+        NSMutableArray *arr_1_3 = [NSMutableArray array];
+        for (int i = 0; i < 10; i++) {
+            NSInteger num_1_3 = random() % listNum_1 + 1;
+            [arr_1_3 addObject:[NSString stringWithFormat:@"%li", num_1_3]];
+        }
+        quickSortArr = [NSMutableArray arrayWithArray:arr_1_3];
+        NSLog(@"排序前如下\n");
+        for (int i = 0; i < quickSortArr.count; i++) {
+            printf("%li  ", [quickSortArr[i] integerValue]);
+        }
+        
+        quickSort(0, quickSortArr.count - 1);
+        
+        NSLog(@"排序后如下\n");
+        for (int i = 0; i < quickSortArr.count; i++) {
+            printf("%li  ", [quickSortArr[i] integerValue]);
         }
     }
     return 0;
